@@ -3,37 +3,15 @@ from datetime import datetime, timezone
 from heapq import merge
 from inspect import signature
 import json
-import os
 import time
 from typing import List
 
-import firebase_admin
-from firebase_admin import credentials
 from firebase_admin import firestore
 from google.api_core.datetime_helpers import DatetimeWithNanoseconds
 import google.cloud.firestore 
 
-## GOOGLE_CREDENTIALS
-# DEVELOPMENT LOCAL
-# from config import GOOGLE_CREDENTIALS
-# DEPLOY
-GOOGLE_CREDENTIALS = {
-    "type": "service_account",
-    "project_id": os.environ["GOOGLE_PROJECT_ID"],
-    "private_key_id": os.environ["GOOGLE_PRIVATE_KEY_ID"],
-    "private_key": os.environ["GOOGLE_PRIVATE_KEY"],
-    "client_email": os.environ["GOOGLE_CLIENT_EMAIL"],
-    "client_id": os.environ["GOOGLE_CLIENT_ID"],
-    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-    "token_uri": "https://oauth2.googleapis.com/token",
-    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-    "client_x509_cert_url": os.environ["GOOGLE_CLIENT_x509_CERT_URL"]
-}
+from firebase_init import firebase_app
 
-def firebase_app():
-    if not firebase_admin._apps:
-        cred = credentials.Certificate(GOOGLE_CREDENTIALS)
-        return firebase_admin.initialize_app(cred)
 
 def nanoseconds_to_datetime(value:float) -> datetime:
     datetime.fromtimestamp(value.timestamp(), tz=timezone.utc)
