@@ -1,7 +1,7 @@
 import ast
 import os
 
-from flask import Flask, request, abort
+from flask import Flask, render_template, request, abort
 from linebot.exceptions import (
     InvalidSignatureError
 )
@@ -23,8 +23,12 @@ def register_message(message:str, num:int) -> None:
 
 @app.route("/")
 def hello_world():
+    param = {
+        'title': 'Index',
+        'message': 'Myhabits with Line-Bot'
+    }
     # sche: display firebase-data 
-    return "hello world!"
+    return render_template('templates/index.html', param)
 
 @app.route("/callback", methods=['POST'])
 def callback():

@@ -17,7 +17,7 @@ def line_conversation(event):
             event.reply_token,
             [
                 TextSendMessage(text=message_text),
-                tmp_message('confirm', 'What number is this?')
+                template_message('confirm', 'What number is this?')
             ]
         )
     
@@ -29,7 +29,7 @@ def greeting(message:str) -> str:
         return message
     return ''
         
-def tmp_message(type:str, text:str) -> TemplateSendMessage:
+def template_message(type:str, text:str) -> TemplateSendMessage:
     if type == 'confirm':
         tmp = ConfirmTemplate(
             text, confirm_actions
