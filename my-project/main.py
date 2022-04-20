@@ -10,9 +10,9 @@ from linebot.models import (
     ImageMessage, VideoMessage
 )
 
-from conversation import line_conversation
-from firebase import ApiMessages, LINEUser
-from line_init import line_bot_api, handler
+from modules.conversation import line_conversation
+from modules.firebase import ApiMessages, LINEUser
+from settings.line_init import line_bot_api, handler
 
 app = Flask(__name__)
 
