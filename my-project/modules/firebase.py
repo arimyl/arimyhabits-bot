@@ -8,7 +8,7 @@ from firebase_admin import firestore
 from google.api_core.datetime_helpers import DatetimeWithNanoseconds
 import google.cloud.firestore 
 
-from firebase_init import firebase_app
+from settings.firebase_init import firebase_app
 
 
 def nanoseconds_to_datetime(value:float) -> datetime:

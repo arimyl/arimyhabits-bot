@@ -3,7 +3,7 @@ from linebot.models import (
     ConfirmTemplate, ButtonsTemplate
 )
 
-from line_init import line_bot_api
+from settings.line_init import line_bot_api
 
 def line_conversation(event):
     message_text = event.message.text
