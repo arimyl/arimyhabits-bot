@@ -1,8 +1,10 @@
 import dataclasses
 from datetime import datetime, timezone
 from heapq import merge
+import sys
 import time
 from typing import List
+import uuid
 
 from firebase_admin import firestore
 from google.api_core.datetime_helpers import DatetimeWithNanoseconds
@@ -40,6 +42,7 @@ class ApiMessages():
 
     def set_message(self):
         self.collection.document().set({
+            'id': uuid.uuid4,
             'message': self.message,
             'type': self.type,
             'timestamp': datetime_with_nanoseconds(datetime.fromtimestamp(self.timestamp))
@@ -83,6 +86,11 @@ def set_user_summary(collection:google.cloud.firestore.CollectionReference, para
             summary_coll.document(doc_id).set(param, {merge: True})
 
 
+def get_message_types(collection, user='test_user'):
+    types_coll = collection.document(user).collection('types')
+    return types_coll.stream()
+
+
 if __name__ == '__main__':
     # messages = ApiMessages('Test message', 1)
     # messages.connect_message_collection()
@@ -92,7 +100,10 @@ if __name__ == '__main__':
 
     # line = LINEUser.from_kwargs(**{'user_id':'id2', 'user_name':'name2','tes1':'aa','tes2':'bb'})
     # print(line.tes1)
-    coll = connect_collection()    
+    coll = connect_collection()
+    for doc in get_message_types(coll):
+        print(doc.to_dict())
+
     
     # source = get_users_info(col)
     # for doc in source:
