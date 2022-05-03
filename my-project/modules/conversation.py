@@ -1,20 +1,30 @@
 import re
 from typing import List
 
+from linebot import LineBotApi
 from linebot.models import (
     TextSendMessage, TemplateSendMessage,
     ConfirmTemplate, ButtonsTemplate
 )
 
-from settings.line_init import line_bot_api
-
+# from modules.write_tmp import register_tmporary
+from modules.operate_firebase import (
+    get_message_types, get_user_info_from_user_id,
+    register_message, register_tmp
+)
 
 # conf
 include_digit = re.compile('\s')
 
-def line_conversation(event):
+def line_conversation(event, line_bot_api: LineBotApi):
     message_text = event.message.text
     user_id = event.source.user_id
+    user_info = get_user_info_from_user_id(user_id)
+    doc_id = user_info.id
+
+    register_message(message_text, doc_id)
+    
+    # register_tmporary(message_text, doc_id)
     
     # compose message
     message_objs = []
@@ -24,13 +34,8 @@ def line_conversation(event):
         message_objs.append(TextSendMessage(text=greeting))
 
     if message_text.isdigit(): # 数値
-        line_bot_api.reply_message(
-            event.reply_token,
-            [
-                TextSendMessage(text=message_text),
-                compose_message('confirm', 'What number is this?')
-            ]
-        )
+        message_objs.append(compose_message('button', 'What number is this?'\
+            , get_message_types(doc_id)))
     
     # reply
     if not(message_objs):
