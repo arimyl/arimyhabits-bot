@@ -14,7 +14,7 @@ def compose_message(type: str, text: str, items: List[dict]=None) -> TemplateSen
         )
     elif type == 'button':
         tmp = ButtonsTemplate(
-            text, compose_type_button(items)
+            text, actions=compose_type_button(items)
         )
     else:
         tmp
@@ -35,7 +35,7 @@ def compose_type_button(types: List[dict]) -> List[dict]:
         action = {
             'type': 'message',
             'label': i['name'],
-            'text': i['number']
+            'text': str(i['number'])
         }
         buttons_actions.append(action)
     buttons_actions.append({
