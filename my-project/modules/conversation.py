@@ -1,13 +1,9 @@
 import re
-from typing import List
 
 from linebot import LineBotApi
-from linebot.models import (
-    TextSendMessage, TemplateSendMessage,
-    ConfirmTemplate, ButtonsTemplate
-)
+from linebot.models import TextSendMessage
 
-# from modules.write_tmp import register_tmporary
+from modules.compose_message import compose_message
 from modules.operate_firebase import (
     get_message_types, get_user_info_from_user_id,
     register_message, register_tmp
@@ -17,6 +13,10 @@ from modules.operate_firebase import (
 include_digit = re.compile('\s')
 
 def line_conversation(event, line_bot_api: LineBotApi):
+    """reply line message. register or get tmp-data at DB.
+    :event: line webhook request data
+    :line_bot_api: line account api for replying message 
+    """
     message_text = event.message.text
     user_id = event.source.user_id
     user_info = get_user_info_from_user_id(user_id)
@@ -56,61 +56,6 @@ def check_greeting(message:str) -> str:
     # return ''
     greeting_list = list(map(lambda x: x if x in message.lower() else '', greetings))
     return ''.join(greeting_list)
-
-
-def compose_message(type: str, text: str, items: List[dict]=None) -> TemplateSendMessage:
-    """TemplateMessageの選択"""
-    if type == 'confirm':
-        tmp = ConfirmTemplate(
-            text, confirm_actions
-        )
-    elif type == 'button':
-        tmp = ButtonsTemplate(
-            text, compose_type_button(items)
-        )
-    else:
-        tmp
-
-    return TemplateSendMessage('this is a template', tmp)
-
-
-def compose_type_button(types: List[dict]) -> List[dict]:
-    """typesからbutton actionを作成
-    :types: type of text message. 
-    :return [button_action, ...]
-    """
-    if types is None:
-        types = []
-
-    buttons_actions = []
-    for i in types:
-        action = {
-            'type': 'message',
-            'label': i.name,
-            'text': i.num
-        }
-        buttons_actions.append(action)
-    buttons_actions.append({
-        'type': 'message',
-        'label': '新規追加',
-        'text': '0'
-    })
-
-    return buttons_actions
-
-
-confirm_actions = [
-    {
-        "type": "message",
-        "label": "はい",
-        "text": "はい"
-    },
-    {
-        "type": "message",
-        "label": "いいえ",
-        "text": "いいえ"
-    }
-]
 
 
 if __name__ == '__main__':
