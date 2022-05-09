@@ -3,42 +3,42 @@ import os
 import pathlib as path
 from typing import List
 
+import google.cloud.firestore as g_firestore
 
-main_path = os.path.dirname(os.path.dirname(__file__))
-tmp_path = os.path.join(main_path, 'tmp')
-
-
-def read_temporary(user_id: str) -> List[str]:
-    """open file and read textlines"""
-    file_path = confirm_file(user_id)
-    file_lines = []
-    if file_path:
-        with open(str(file_path), 'r') as f:
-            for line in f.readlines:
-                file_lines.append(line)
-        
-    return file_lines
+from modules.operate_firebase import connect_collection
+from models.api_tmp import ApiTmporary
 
 
-def register_tmporary(message_text: str, user_id: str) -> None:
-    """register text to temporary file"""
-    file_path = confirm_file(user_id)
-    #
-    if file_path is None:
-        file_path = path.Path(os.path.join(tmp_path, f'tmp_{user_id}.csv'))
-    
-    write_csv(create_contents(message_text), file_path.name)
-        
+def get_user_info_from_user_id(user_id: str) -> dict:
+    conditions = ['user_id', '==', user_id]
+    users_info = get_users_info(connect_collection(), conditions)
+    user_info_list = [_ for _ in users_info]
+    # user_info_list = [a.to_dict() for a in get_users_info(coll, conditions)]
+    if len(user_info_list) == 1:
+        return user_info_list[0]
+    return None
 
-def write_csv(contents: List[list], file_name: str='tmp.csv') -> None:
-    """一時保存ファイル作成・書き込み
-    :contents
+
+def get_users_info(collection: g_firestore.CollectionReference, conditions: List[str]='') -> object:
+    """get users fields from firestore
+    :conditions[0]: field name
+    :conditions[1]: conditional expression
+    :conditions[2]: field value
     """
-    file_path = os.path.join(main_path, file_name)
-    with open(file=file_path, mode='w+', newline='\n') as f:
-        for content in contents:
-            f.write(','.join(content))
+    if conditions == '':
+        return collection.stream()
+    elif len(conditions) == 3:
+        return collection.where(conditions[0],conditions[1],conditions[2]).stream()
+    else:
+        return list()
 
+
+def register_tmp(message_id: str, user: str='test_user') -> None:
+    """messageをFirestoreに登録する"""
+    tmp = ApiTmporary()
+    coll = connect_collection()
+    tmp.set_temporary(coll.document(user).collection('tmps'), message_id)
+        
 
 def create_contents(message_text: str) -> List[list]:
     """"""
@@ -47,15 +47,3 @@ def create_contents(message_text: str) -> List[list]:
         content = [t, str(dt.now())[:-3]]
         contents.append(content)
     return contents
-
-
-def confirm_file(user_id: str) -> bool:
-    """csvファイルを確認する
-    """
-    for file in path.Path(tmp_path).glob('*.csv'):
-        # fileName confirm ('tmp_<user_id>.csv')
-        if file.stem.split('_')[1] == user_id:
-            return file
-    return None
-
-
