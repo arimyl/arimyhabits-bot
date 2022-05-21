@@ -1,78 +1,62 @@
-from linebot.models import (
-    TextSendMessage, TemplateSendMessage,
-    ConfirmTemplate, ButtonsTemplate
+import re
+
+from linebot import LineBotApi
+from linebot.models import TextSendMessage
+
+from modules.compose_message import compose_message
+from modules.operate_firebase import (
+    get_message_types, get_user_info_from_user_id,
+    register_message, register_tmp
 )
 
-from settings.line_init import line_bot_api
+# conf
+include_digit = re.compile('\s')
 
-def line_conversation(event):
+def line_conversation(event, line_bot_api: LineBotApi):
+    """reply line message. register or get tmp-data at DB.
+    :event: line webhook request data
+    :line_bot_api: line account api for replying message 
+    """
     message_text = event.message.text
-    if greeting(message_text): # 挨拶
-        line_bot_api.reply_message(
-            event.reply_token,
-            [TextSendMessage(text=message_text)]
-        )
-    elif message_text.isdigit(): # 数値
-        line_bot_api.reply_message(
-            event.reply_token,
-            [
-                TextSendMessage(text=message_text),
-                template_message('confirm', 'What number is this?')
-            ]
-        )
+    user_id = event.source.user_id
+    user_info = get_user_info_from_user_id(user_id)
+    doc_id = user_info.id
+
+    register_message(message_text, doc_id)
     
-def greeting(message:str) -> str:
+    # register_tmporary(message_text, doc_id)
+    
+    # compose message
+    message_objs = []
+    # if greeting(message_text): # 挨拶
+    greeting = check_greeting(message_text) # 挨拶
+    if greeting:
+        message_objs.append(TextSendMessage(text=greeting))
+
+    if message_text.isdigit(): # 数値
+        message_objs.append(compose_message('button', 'What number is this?'\
+            , get_message_types(doc_id)))
+    
+    # reply
+    if not(message_objs):
+        message_objs = [TextSendMessage(text=message_text)]
+
+    line_bot_api.reply_message(
+        event.reply_token,
+        message_objs
+    )
+
+    
+def check_greeting(message:str) -> str:
     """挨拶判定を行い、同じ挨拶を返す"""
-    greetings = ['hello', 'おはよう', 'こんにちは','こんばんは']
+    greetings = ['hello', 'おはよう', 'こんにちは', 'こんばんは']
     # greetings check
-    if sum(list(map(lambda x: x in message.lower(), greetings))):
-        return message
-    return ''
-        
-def template_message(type:str, text:str) -> TemplateSendMessage:
-    if type == 'confirm':
-        tmp = ConfirmTemplate(
-            text, confirm_actions
-        )
-    elif type == 'button':
-        tmp = ButtonsTemplate(
-            text, buttons_actions
-        )
-    else:
-        tmp
+    # if sum(list(map(lambda x: x in message.lower(), greetings))):
+        # return message
+    # return ''
+    greeting_list = list(map(lambda x: x if x in message.lower() else '', greetings))
+    return ''.join(greeting_list)
 
-    return TemplateSendMessage('this is a template', tmp)
-
-confirm_actions = [
-    {
-        "type": "message",
-        "label": "はい",
-        "text": "はい"
-    },
-    {
-        "type": "message",
-        "label": "いいえ",
-        "text": "いいえ"
-    }
-]
-
-buttons_actions = [
-    {
-        "type": "message",
-        "label": "アクション 1",
-        "text": "アクション 1"
-    },
-    {
-        "type": "message",
-        "label": "アクション 2",
-        "text": "アクション 2"
-    },
-    {
-        "type": "message",
-        "label": "アクション 3",
-        "text": "アクション 3"
-    }
-]
 
 if __name__ == '__main__':
     pass
