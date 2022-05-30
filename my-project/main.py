@@ -5,7 +5,6 @@ from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, ImageMessage, VideoMessage
 
 from modules.conversation import line_conversation
-
 from settings.line_init import line_bot_api, handler
 
 # from test_line import line_bot_api, handler  # debug
