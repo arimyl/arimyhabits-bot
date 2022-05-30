@@ -4,9 +4,10 @@ from linebot import LineBotApi
 from linebot.models import TextSendMessage
 
 from modules.compose_message import compose_message
+from modules.operate_message import register_message
 from modules.operate_firebase import (
     get_message_types, get_user_info_from_user_id,
-    register_message, register_tmp
+    register_tmp
 )
 
 # conf

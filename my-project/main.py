@@ -5,9 +5,7 @@ from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, ImageMessage, VideoMessage
 
 from modules.conversation import line_conversation
-from modules.operate_firebase import register_message
 
-# from modules.write_tmp import read_temporary
 from settings.line_init import line_bot_api, handler
 
 # from test_line import line_bot_api, handler  # debug
@@ -30,7 +28,6 @@ def callback():
     # get request body as text
     body = request.get_data(as_text=True)
     app.logger.info("Request body: " + body)
-    # register_message(body)
 
     # handle webhook body
     try:
