@@ -9,15 +9,15 @@ from modules.nanoseconds import datetime_with_nanoseconds
 
 _message_ids = "message_ids"
 _timestamp = "timestamp"
-_type_number = "type_number"
+_conversation_type = "conversation_type"
 
 
 @dataclasses.dataclass
-class ApiTmporary:
+class ApiConversation:
     message_ids: list = []
-    type_number: int = 0
+    conversation_type: int = 0
 
-    def set_temporary(self, collection: g_firestore, message_id: str) -> None:
+    def register_conversation(self, collection: g_firestore, message_id: str) -> None:
         msg_ids = self.message_ids
         if not (msg_ids):
             return None
@@ -28,11 +28,11 @@ class ApiTmporary:
                 _timestamp: datetime_with_nanoseconds(
                     datetime.fromtimestamp(round(time.time()))
                 ),
-                _type_number: self.type_number,
+                _conversation_type: self.conversation_type,
             }
         )
 
-    def update_temporary(
+    def update_conversation(
         self, collection: g_firestore, doc_id: str, message_id: str
     ) -> None:
         msg_ids = self.message_ids
@@ -45,9 +45,9 @@ class ApiTmporary:
                 _timestamp: datetime_with_nanoseconds(
                     datetime.fromtimestamp(round(time.time()))
                 ),
-                _type_number: self.type_number,
+                _conversation_type: self.conversation_type,
             }
         )
 
-    def select_type_number(self, num: int):
-        self.type_number = num
+    def select_conversation_type(self, num: int):
+        self.conversation_type = num

@@ -9,7 +9,7 @@ from modules.operate_firebase import (
 def register_message(message: str, user_docId: str = "test_user") -> None:
     """messageをFirestoreに登録する"""
     coll = _messages_collection(user_docId)
-    params = models.api_message.set_message(message)
+    params = models.api_message.create_message(message)
     register_document(coll, params)
 
 

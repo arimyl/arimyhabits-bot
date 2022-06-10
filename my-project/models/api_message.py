@@ -10,7 +10,7 @@ _message = "message"
 _timestamp = "timestamp"
 
 
-def set_message(message: str) -> dict:
+def create_message(message: str) -> dict:
     return {
         _id: str(uuid.uuid4()),
         _message: message,

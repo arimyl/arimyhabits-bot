@@ -3,7 +3,7 @@ import re
 from linebot import LineBotApi
 from linebot.models import TextSendMessage
 
-from modules.compose_message import compose_message
+from modules.compose_message import compose_template_message, MessageType
 from modules.operate_message import register_message
 from modules.operate_firebase import (
     get_message_types,
@@ -38,7 +38,9 @@ def line_conversation(event, line_bot_api: LineBotApi):
 
     if message_text.isdigit():  # 数値
         message_objs.append(
-            compose_message("button", "What number is this?", get_message_types(doc_id))
+            compose_template_message(
+                MessageType.button, "What number is this?", get_message_types(doc_id)
+            )
         )
 
     # reply
@@ -51,10 +53,6 @@ def line_conversation(event, line_bot_api: LineBotApi):
 def check_greeting(message: str) -> str:
     """挨拶判定を行い、同じ挨拶を返す"""
     greetings = ["hello", "おはよう", "こんにちは", "こんばんは"]
-    # greetings check
-    # if sum(list(map(lambda x: x in message.lower(), greetings))):
-    # return message
-    # return ''
     greeting_list = list(map(lambda x: x if x in message.lower() else "", greetings))
     return "".join(greeting_list)
 

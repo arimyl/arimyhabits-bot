@@ -77,15 +77,6 @@ def get_document_id():
 
 
 if __name__ == "__main__":
-    # messages = ApiMessages('Test message', 1)
-    # messages.connect_message_collection()
-    # messages.set_message()
-    # for doc in messages.get_messages():
-    #     print(doc.to_dict())
-
-    # line = LINEUser.from_kwargs(**{'user_id':'id2', 'user_name':'name2','tes1':'aa','tes2':'bb'})
-    # print(line.tes1)
-
     # source = get_users_info(col)
     # for doc in source:
     #     print(doc.to_dict())
