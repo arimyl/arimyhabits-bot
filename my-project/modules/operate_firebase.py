@@ -20,7 +20,7 @@ def connect_collection(
 
 
 def register_document(collection, params) -> None:
-    """"""
+    """register collection of document firebase"""
     collection.document().set(params)
 
 
