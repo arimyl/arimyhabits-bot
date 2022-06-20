@@ -13,7 +13,7 @@ def register_message(message: str, user_docId: str = "test_user") -> str:
     id str: message id(uuid4)
     """
     msg_coll = _messages_collection(user_docId)
-    params = models.api_message.create_message(message)
+    params = models.api_message.Message(message).__dict__
     register_document(msg_coll, params)
     return params[models.api_message._id]
 

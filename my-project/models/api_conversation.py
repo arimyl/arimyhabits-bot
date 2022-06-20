@@ -22,8 +22,8 @@ class ApiConversation:
 
     def register_conversation(self, collection: g_firestore, message_id: str) -> None:
         msg_ids = self.message_ids
-        if not (msg_ids):
-            return None
+        if msg_ids:  # message_ids初期化
+            msg_ids = []
 
         collection.document().set(
             {
