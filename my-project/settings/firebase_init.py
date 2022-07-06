@@ -5,9 +5,6 @@ from firebase_admin import credentials
 
 
 ## GOOGLE_CREDENTIALS
-# DEVELOPMENT LOCAL
-# from config import GOOGLE_CREDENTIALS
-# DEPLOY
 GOOGLE_CREDENTIALS = {
     "type": "service_account",
     "project_id": os.environ["GOOGLE_PROJECT_ID"],
@@ -18,8 +15,9 @@ GOOGLE_CREDENTIALS = {
     "auth_uri": "https://accounts.google.com/o/oauth2/auth",
     "token_uri": "https://oauth2.googleapis.com/token",
     "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-    "client_x509_cert_url": os.environ["GOOGLE_CLIENT_x509_CERT_URL"]
+    "client_x509_cert_url": os.environ["GOOGLE_CLIENT_x509_CERT_URL"],
 }
+
 
 def firebase_app():
     if not firebase_admin._apps:
