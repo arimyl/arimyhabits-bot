@@ -10,7 +10,7 @@ class MessageType(Enum):
 
 
 def compose_template_message(
-    type_obj: MessageType, text: str, conversation_types: List[dict] = None
+    type_obj: MessageType, text: str, conversation_types: List[dict]
 ) -> TemplateSendMessage:
     """TemplateMessageの選択"""
     if type_obj == MessageType.confirm:
@@ -31,9 +31,6 @@ def compose_type_button(types: List[dict]) -> List[dict]:
     :types: type of text message.
     :return [button_action, ...]
     """
-    if types is None:
-        types = []
-
     buttons_actions = []
     for t in types:
         action = {"type": "message", "label": t["name"], "text": str(t["number"])}

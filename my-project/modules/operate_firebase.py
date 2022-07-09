@@ -1,7 +1,7 @@
 develop = True  # flag
 
 from heapq import merge
-from typing import List
+from typing import List, Union
 
 from firebase_admin import firestore
 import google.cloud.firestore as g_firestore
@@ -26,7 +26,7 @@ def register_document(collection, params) -> None:
 
 def search_collectionDocuments(
     collection: g_firestore.CollectionReference, conditions: List[str]
-) -> object:
+) -> Union[object, list]:
     """get users fields from firestore
     :conditions[0]: field name
     :conditions[1]: conditional expression
@@ -67,6 +67,9 @@ def get_message_types(user: str = "test_user") -> List[dict]:
     :user str: user Document name
     """
     types_coll = connect_collection().document(user).collection("types")
+
+    if types_coll == None:
+        return []
     return [doc.to_dict() for doc in types_coll.stream()]
 
 

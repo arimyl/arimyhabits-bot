@@ -37,19 +37,19 @@ def line_conversation(event, line_bot_api: LineBotApi):
     # if greeting(message_text): # 挨拶
     greeting = check_greeting(message_text)  # 挨拶
     if greeting:
-        message_objs.append(TextSendMessage(text=greeting))
+        message_objs = [TextSendMessage(text=greeting)]
         register_new_conversation(message_id, doc_id)
 
-    if message_text.isdigit():  # 数値
-        message_objs.append(
+    elif message_text.isdigit():  # 数値
+        message_objs = [
             compose_template_message(
                 MessageType.button, "What number is this?", get_message_types(doc_id)
             )
-        )
+        ]
         # update_conversation()
 
     # reply
-    if not (message_objs):
+    else:
         message_objs = [TextSendMessage(text=message_text)]
 
     line_bot_api.reply_message(event.reply_token, message_objs)

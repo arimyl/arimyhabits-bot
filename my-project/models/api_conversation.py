@@ -20,6 +20,11 @@ class ApiConversation:
     message_ids: list = []
     conversation_type: int = 0
 
+    def initiation(self) -> None:
+        self.id = str(uuid.uuid4())
+        self.message_ids = 
+        self.conversation_type = 0
+
     def register_conversation(self, collection: g_firestore, message_id: str) -> None:
         msg_ids = self.message_ids
         if msg_ids:  # message_ids初期化
